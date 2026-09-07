@@ -1,0 +1,2 @@
+﻿namespace TradeSphere.Application.Features.Auth.Login;
+public sealed record LoginCommand(string Email, string Password) : IRequest<Result<AuthResponse>>, ITransactionalRequest;

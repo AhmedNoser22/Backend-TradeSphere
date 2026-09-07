@@ -1,0 +1,9 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using TradeSphere.Domain.Common;
+global using TradeSphere.Domain.Enums;
+global using TradeSphere.Domain.Exceptions;
+global using TradeSphere.Domain.Events;
+global using System.Linq.Expressions;
+global using TradeSphere.Domain.Entities;

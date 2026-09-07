@@ -1,0 +1,29 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using MediatR;
+global using FluentValidation;
+global using Mapster;
+global using TradeSphere.Domain.Common;
+global using TradeSphere.Domain.Entities;
+global using TradeSphere.Domain.Enums;
+global using TradeSphere.Domain.Exceptions;
+global using TradeSphere.Domain.ValueObjects;
+global using TradeSphere.Domain.Specifications;
+global using TradeSphere.Application.Common.Interfaces;
+global using TradeSphere.Application.Common.Models;
+global using Microsoft.EntityFrameworkCore;
+global using FluentValidation.Results;
+global using Microsoft.Extensions.Logging;
+global using TradeSphere.Domain.Events;
+global using System.Diagnostics;
+global using System.Reflection;
+global using Microsoft.Extensions.DependencyInjection;
+global using TradeSphere.Application.Common.Behaviors;
+global using System.Security.Cryptography;
+global using TradeSphere.Application.Common.Utilities;
+global using TradeSphere.Application.Features.Auth.Common;
+
+

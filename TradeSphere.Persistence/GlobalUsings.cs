@@ -1,0 +1,17 @@
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using Microsoft.EntityFrameworkCore;
+global using MediatR;
+global using TradeSphere.Domain.Common;
+global using TradeSphere.Domain.Entities;
+global using TradeSphere.Domain.Specifications;
+global using TradeSphere.Application.Common.Interfaces;
+global using TradeSphere.Persistence.Context;
+global using System.Reflection;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using TradeSphere.Persistence.Repositories;

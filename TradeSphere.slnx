@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="TradeSphere.API/TradeSphere.API.csproj" />
+  <Project Path="TradeSphere.Application/TradeSphere.Application.csproj" />
+  <Project Path="TradeSphere.Domain/TradeSphere.Domain.csproj" />
+  <Project Path="TradeSphere.Infrastructure/TradeSphere.Infrastructure.csproj" />
+  <Project Path="TradeSphere.Persistence/TradeSphere.Persistence.csproj" />
+</Solution>
