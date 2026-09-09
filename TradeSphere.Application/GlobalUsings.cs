@@ -25,5 +25,8 @@ global using TradeSphere.Application.Common.Behaviors;
 global using System.Security.Cryptography;
 global using TradeSphere.Application.Common.Utilities;
 global using TradeSphere.Application.Features.Auth.Common;
+global using TradeSphere.Application.Common.Exceptions;
+global using TradeSphere.Application.Features.Users.Common;
+
 
 

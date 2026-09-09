@@ -25,4 +25,5 @@ public sealed class Product : AuditableEntity
     }
 
     public void Deactivate() => IsActive = false;
+    public void Activate() => IsActive = true;
 }

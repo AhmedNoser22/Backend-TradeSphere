@@ -4,6 +4,12 @@ public sealed class Repository<T>(ApplicationDbContext context) : IRepository<T>
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
         await context.Set<T>().FindAsync([id], cancellationToken);
 
+    public async Task<bool> AnyAsync(ISpecification<T> spec, CancellationToken cancellationToken = default) =>
+    await context.Set<T>().Where(spec.Criteria).AnyAsync(cancellationToken);
+
+    public async Task<T?> FirstOrDefaultAsync(ISpecification<T> spec, CancellationToken cancellationToken = default) =>
+        await ApplySpecification(spec).FirstOrDefaultAsync(cancellationToken);
+
     public async Task<List<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken = default) =>
         await ApplySpecification(spec).ToListAsync(cancellationToken);
 

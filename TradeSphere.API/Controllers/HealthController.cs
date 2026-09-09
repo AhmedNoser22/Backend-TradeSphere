@@ -1,5 +1,6 @@
 ﻿namespace TradeSphere.Api.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("api/[controller]")]
 public sealed class HealthController : ControllerBase

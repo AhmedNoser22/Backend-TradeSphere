@@ -6,7 +6,7 @@ public sealed class ResetPasswordCommandHandler(
 {
     public async Task<Result> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = (await userRepository.ListAsync(new UserByEmailSpecification(request.Email), cancellationToken)).FirstOrDefault();
+        var user = await userRepository.FirstOrDefaultAsync(new UserByEmailSpecification(request.Email), cancellationToken);
         if (user is null)
             return Result.Failure("Invalid request.");
 

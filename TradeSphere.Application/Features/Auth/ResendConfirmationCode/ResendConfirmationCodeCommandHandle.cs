@@ -6,7 +6,7 @@ public sealed class ResendConfirmationCodeCommandHandler(
 {
     public async Task<Result> Handle(ResendConfirmationCodeCommand request, CancellationToken cancellationToken)
     {
-        var user = (await userRepository.ListAsync(new UserByEmailSpecification(request.Email), cancellationToken)).FirstOrDefault();
+        var user = await userRepository.FirstOrDefaultAsync(new UserByEmailSpecification(request.Email), cancellationToken);
 
         if (user is null || user.EmailConfirmed)
             return Result.Success();

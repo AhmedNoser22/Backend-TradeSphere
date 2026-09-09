@@ -1,4 +1,6 @@
 ﻿namespace TradeSphere.Api.Controllers;
+
+[AllowAnonymous]
 public sealed class AuthController(ISender sender) : ApiControllerBase(sender)
 {
     [HttpPost("register")]

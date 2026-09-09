@@ -6,7 +6,8 @@ public sealed class ForgotPasswordCommandHandler(
 {
     public async Task<Result> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
-        var user = (await userRepository.ListAsync(new UserByEmailSpecification(request.Email), cancellationToken)).FirstOrDefault();
+        var user = await userRepository.FirstOrDefaultAsync(new UserByEmailSpecification(request.Email), cancellationToken);
+
         if (user is null)
             return Result.Success();
 

@@ -11,6 +11,10 @@ public sealed class GlobalExceptionMiddleware(RequestDelegate next, ILogger<Glob
         {
             await WriteResponseAsync(context, HttpStatusCode.BadRequest, "Validation failed.", ex.Errors);
         }
+        catch (NotFoundException ex) 
+        {
+            await WriteResponseAsync(context, HttpStatusCode.NotFound, ex.Message);
+        }
         catch (DomainException ex)
         {
             await WriteResponseAsync(context, HttpStatusCode.BadRequest, ex.Message);

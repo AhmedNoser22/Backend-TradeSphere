@@ -78,7 +78,7 @@ public sealed class User : AuditableEntity
         _refreshTokens.Add(refreshToken);
         return refreshToken;
     }
-
+    public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
     public void ChangeRole(UserRole role) => Role = role;
 }

@@ -21,7 +21,7 @@ public sealed class Supplier : AuditableEntity
     }
 
     public void Deactivate() => IsActive = false;
-    public void Reactivate() => IsActive = true;
+    public void Activate() => IsActive = true;
 
     public void UpdateDetails(string name, string country, ContactInfo contact)
     {
