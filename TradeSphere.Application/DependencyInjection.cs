@@ -9,6 +9,8 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(assembly);
         services.AddMapster();
 
+        SupplierMapping.Register();
+
         // Order matters: catch unexpected errors first, then log, then
         // validate input, then (only for commands) commit the transaction.
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehavior<,>));

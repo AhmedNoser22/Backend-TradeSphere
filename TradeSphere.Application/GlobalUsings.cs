@@ -24,6 +24,7 @@ global using TradeSphere.Application.Features.Suppliers.Common;
 global using TradeSphere.Application.Features.Users.Common;
 global using TradeSphere.Domain.Common;
 global using TradeSphere.Domain.Entities;
+global using TradeSphere.Application.Features.PurchaseOrders.Common;
 global using TradeSphere.Domain.Enums;
 global using TradeSphere.Domain.Events;
 global using TradeSphere.Domain.Exceptions;
