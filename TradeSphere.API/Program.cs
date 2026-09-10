@@ -35,6 +35,8 @@ builder.Services
 
 builder.Services.AddControllers();
 
+
+// all endpoints require authentication by default unless [AllowAnonymous] is specified
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
