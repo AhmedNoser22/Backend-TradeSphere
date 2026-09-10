@@ -21,6 +21,7 @@ global using TradeSphere.Application.Common.Utilities;
 global using TradeSphere.Application.Features.Auth.Common;
 global using TradeSphere.Application.Features.Products.Common;
 global using TradeSphere.Application.Features.Suppliers.Common;
+global using TradeSphere.Application.Features.Shipments.Common;
 global using TradeSphere.Application.Features.Users.Common;
 global using TradeSphere.Domain.Common;
 global using TradeSphere.Domain.Entities;
