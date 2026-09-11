@@ -1,5 +1,4 @@
 ﻿namespace TradeSphere.Application.Features.PurchaseOrders.AddLine;
-
 public sealed class AddPurchaseOrderLineCommandHandler(
     IRepository<PurchaseOrder> purchaseOrderRepository,
     IRepository<Product> productRepository) : IRequestHandler<AddPurchaseOrderLineCommand, Result>

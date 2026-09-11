@@ -1,5 +1,5 @@
 ﻿namespace TradeSphere.Api.Controllers;
-[RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager, UserRole.GeneralManager)]
+[RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager, UserRole.GeneralManager, UserRole.SystemAdministrator)]
 public sealed class PurchaseOrdersController(ISender sender) : ApiControllerBase(sender)
 {
     [HttpGet]
@@ -11,22 +11,22 @@ public sealed class PurchaseOrdersController(ISender sender) : ApiControllerBase
     public async Task<ActionResult<PurchaseOrderDetailsDto>> GetById(Guid id, CancellationToken cancellationToken) =>
         Ok(await Mediator.Send(new GetPurchaseOrderByIdQuery(id), cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager)]
+    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager, UserRole.SystemAdministrator)]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(CreatePurchaseOrderCommand command, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(command, cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager)]
+    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager,UserRole.SystemAdministrator)]
     [HttpPost("{id:guid}/lines")]
     public async Task<ActionResult> AddLine(Guid id, [FromBody] AddLineRequest request, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(new AddPurchaseOrderLineCommand(id, request.ProductId, request.Quantity, request.UnitPrice, request.Currency), cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager)]
+    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager, UserRole.SystemAdministrator)]
     [HttpPost("{id:guid}/confirm")]
     public async Task<ActionResult> Confirm(Guid id, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(new ConfirmPurchaseOrderCommand(id), cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager)]
+    [RequireRole(UserRole.ProcurementOfficer, UserRole.OperationsManager, UserRole.SystemAdministrator)]
     [HttpPost("{id:guid}/cancel")]
     public async Task<ActionResult> Cancel(Guid id, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(new CancelPurchaseOrderCommand(id), cancellationToken));

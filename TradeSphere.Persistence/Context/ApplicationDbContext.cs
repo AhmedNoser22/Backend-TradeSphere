@@ -1,6 +1,4 @@
-﻿using TradeSphere.Application.Common.Models;
-
-namespace TradeSphere.Persistence.Context;
+﻿namespace TradeSphere.Persistence.Context;
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IPublisher publisher)
     : DbContext(options), IApplicationDbContext
 {
@@ -39,9 +37,10 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
             foreach (var domainEvent in events)
             {
-                var notificationType = typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType());
-                var notification = (INotification)Activator.CreateInstance(notificationType, domainEvent)!;
-                await publisher.Publish(notification, cancellationToken);
+                var wrapperType = typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType());
+                var wrappedNotification = (INotification)Activator.CreateInstance(wrapperType, domainEvent)!;
+
+                await publisher.Publish(wrappedNotification, cancellationToken);
             }
         }
 

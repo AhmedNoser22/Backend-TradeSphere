@@ -61,3 +61,8 @@ global using TradeSphere.Application.Features.Products.DeactivateProduct;
 global using TradeSphere.Application.Features.Products.GetProductById;
 global using TradeSphere.Application.Features.Products.GetProducts;
 global using TradeSphere.Application.Features.Products.UpdateProduct;
+global using TradeSphere.Application.Features.CustomsClearance.Clear;
+global using TradeSphere.Application.Features.CustomsClearance.Common;
+global using TradeSphere.Application.Features.CustomsClearance.FileDeclaration;
+global using TradeSphere.Application.Features.CustomsClearance.GetList;
+global using TradeSphere.Application.Features.CustomsClearance.Reject;
