@@ -665,30 +665,6 @@ namespace TradeSphere.Persistence.Migrations
 
             modelBuilder.Entity("TradeSphere.Domain.Entities.Customer", b =>
                 {
-                    b.OwnsOne("TradeSphere.Domain.ValueObjects.ContactInfo", "Contact", b1 =>
-                        {
-                            b1.Property<Guid>("CustomerId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Email")
-                                .IsRequired()
-                                .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)")
-                                .HasColumnName("Email");
-
-                            b1.Property<string>("Phone")
-                                .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)")
-                                .HasColumnName("Phone");
-
-                            b1.HasKey("CustomerId");
-
-                            b1.ToTable("Customers");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CustomerId");
-                        });
-
                     b.OwnsOne("TradeSphere.Domain.ValueObjects.Address", "BillingAddress", b1 =>
                         {
                             b1.Property<Guid>("CustomerId")
@@ -719,7 +695,31 @@ namespace TradeSphere.Persistence.Migrations
 
                             b1.HasKey("CustomerId");
 
-                            b1.ToTable("Customers");
+                            b1.ToTable("Customers", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CustomerId");
+                        });
+
+                    b.OwnsOne("TradeSphere.Domain.ValueObjects.ContactInfo", "Contact", b1 =>
+                        {
+                            b1.Property<Guid>("CustomerId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Email");
+
+                            b1.Property<string>("Phone")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Phone");
+
+                            b1.HasKey("CustomerId");
+
+                            b1.ToTable("Customers", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -869,7 +869,7 @@ namespace TradeSphere.Persistence.Migrations
 
                             b1.HasKey("SupplierId");
 
-                            b1.ToTable("Suppliers");
+                            b1.ToTable("Suppliers", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("SupplierId");

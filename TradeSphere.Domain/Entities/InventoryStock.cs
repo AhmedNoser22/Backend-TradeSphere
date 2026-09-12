@@ -12,21 +12,39 @@ public sealed class InventoryStock : AuditableEntity
 
     public InventoryStock(Guid productId) => ProductId = productId;
 
-    public void Receive(int quantity, Guid referenceId, string note)
+    public InventoryMovement Receive(int quantity, Guid referenceId, string note)
     {
         if (quantity <= 0) throw new BusinessRuleViolationException("Received quantity must be greater than zero.");
 
         QuantityOnHand += quantity;
-        _movements.Add(new InventoryMovement(Id, InventoryMovementType.ReceiptFromQualityControl, quantity, referenceId, note));
+        var movement = new InventoryMovement(Id, InventoryMovementType.ReceiptFromQualityControl, quantity, referenceId, note);
+        _movements.Add(movement);
+        return movement;
     }
 
-    public void IssueForSale(int quantity, Guid salesOrderId)
+    public InventoryMovement IssueForSale(int quantity, Guid salesOrderId)
     {
         if (quantity <= 0) throw new BusinessRuleViolationException("Issued quantity must be greater than zero.");
         if (quantity > QuantityOnHand)
             throw new BusinessRuleViolationException($"Not enough stock: available {QuantityOnHand}, requested {quantity}.");
 
         QuantityOnHand -= quantity;
-        _movements.Add(new InventoryMovement(Id, InventoryMovementType.SalesIssue, -quantity, salesOrderId, "Sales order fulfillment"));
+        var movement = new InventoryMovement(Id, InventoryMovementType.SalesIssue, -quantity, salesOrderId, "Sales order fulfillment");
+        _movements.Add(movement);
+        return movement;
+    }
+
+    public InventoryMovement AdjustQuantity(int quantityChange, string reason)
+    {
+        if (quantityChange == 0)
+            throw new BusinessRuleViolationException("Adjustment quantity cannot be zero.");
+        if (QuantityOnHand + quantityChange < 0)
+            throw new BusinessRuleViolationException($"Adjustment would result in negative stock (current: {QuantityOnHand}, change: {quantityChange}).");
+
+        QuantityOnHand += quantityChange;
+        var type = quantityChange > 0 ? InventoryMovementType.AdjustmentIn : InventoryMovementType.AdjustmentOut;
+        var movement = new InventoryMovement(Id, type, quantityChange, Id, reason);
+        _movements.Add(movement);
+        return movement;
     }
 }

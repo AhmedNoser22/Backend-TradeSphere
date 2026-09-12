@@ -21,12 +21,14 @@ public sealed class SalesOrder : AuditableEntity
         OrderDate = orderDate;
     }
 
-    public void AddLine(Guid productId, int quantity, decimal unitPrice)
+    public SalesOrderLine AddLine(Guid productId, int quantity, decimal unitPrice)
     {
         if (Status != SalesOrderStatus.Draft)
             throw new BusinessRuleViolationException("Lines can only be added while the order is still a Draft.");
 
-        _lines.Add(new SalesOrderLine(Id, productId, quantity, unitPrice));
+        var line = new SalesOrderLine(Id, productId, quantity, unitPrice);
+        _lines.Add(line);
+        return line;
     }
 
     public void Confirm()

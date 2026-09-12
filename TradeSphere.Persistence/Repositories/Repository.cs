@@ -21,9 +21,11 @@ public sealed class Repository<T>(ApplicationDbContext context) : IRepository<T>
 
     public void Update(T entity)
     {
-        var entry = context.Entry(entity);
-        if (entry.State == EntityState.Detached)
-            context.Attach(entity);
+        if (context.Entry(entity).State == EntityState.Detached)
+        {
+            context.Set<T>().Attach(entity);
+            context.Entry(entity).State = EntityState.Modified;
+        }
     }
 
     public void Remove(T entity) => context.Set<T>().Remove(entity);

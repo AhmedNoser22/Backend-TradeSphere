@@ -2,9 +2,9 @@
 
 public sealed class LoginCommandHandler(
     IRepository<User> userRepository,
-    IApplicationDbContext dbContext,
     IPasswordHasher passwordHasher,
-    IJwtTokenService jwtTokenService) : IRequestHandler<LoginCommand, Result<AuthResponse>>
+    IJwtTokenService jwtTokenService,
+    IApplicationDbContext dbContext) : IRequestHandler<LoginCommand, Result<AuthResponse>>
 {
     public async Task<Result<AuthResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
@@ -20,15 +20,12 @@ public sealed class LoginCommandHandler(
             return Result<AuthResponse>.Failure("Please confirm your email before logging in.");
 
         var (accessToken, accessTokenExpiresAtUtc) = jwtTokenService.GenerateAccessToken(user);
-        var (refreshTokenValue, refreshTokenExpiresAtUtc) = jwtTokenService.GenerateRefreshToken();
+        var (refreshToken, refreshTokenExpiresAtUtc) = jwtTokenService.GenerateRefreshToken();
 
-        var refreshToken = user.IssueRefreshToken(refreshTokenValue, refreshTokenExpiresAtUtc);
-
-        // Explicitly tell EF this is a brand new row — don't rely on it
-        // guessing from the collection alone (see the concurrency bug this fixed).
-        dbContext.RefreshTokens.Add(refreshToken);
+        var newToken = user.IssueRefreshToken(refreshToken, refreshTokenExpiresAtUtc);
+        await dbContext.Set<Domain.Entities.RefreshToken>().AddAsync(newToken, cancellationToken);
 
         return Result<AuthResponse>.Success(new AuthResponse(
-            user.Id, user.FullName, user.Email, user.Role, accessToken, accessTokenExpiresAtUtc, refreshTokenValue));
+            user.Id, user.FullName, user.Email, user.Role, accessToken, accessTokenExpiresAtUtc, refreshToken));
     }
 }

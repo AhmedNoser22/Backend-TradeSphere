@@ -25,7 +25,7 @@ public sealed class QualityInspectionLineConfiguration : IEntityTypeConfiguratio
         builder.ToTable("QualityInspectionLines");
         builder.HasKey(l => l.Id);
 
-        builder.HasOne<Product>()
+        builder.HasOne(l => l.Product)
             .WithMany()
             .HasForeignKey(l => l.ProductId)
             .OnDelete(DeleteBehavior.Restrict);

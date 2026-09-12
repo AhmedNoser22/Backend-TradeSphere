@@ -1,7 +1,9 @@
 ﻿namespace TradeSphere.Application.Features.PurchaseOrders.AddLine;
+
 public sealed class AddPurchaseOrderLineCommandHandler(
     IRepository<PurchaseOrder> purchaseOrderRepository,
-    IRepository<Product> productRepository) : IRequestHandler<AddPurchaseOrderLineCommand, Result>
+    IRepository<Product> productRepository,
+    IApplicationDbContext dbContext) : IRequestHandler<AddPurchaseOrderLineCommand, Result>
 {
     public async Task<Result> Handle(AddPurchaseOrderLineCommand request, CancellationToken cancellationToken)
     {
@@ -16,14 +18,14 @@ public sealed class AddPurchaseOrderLineCommandHandler(
 
         try
         {
-            purchaseOrder.AddLine(request.ProductId, request.Quantity, request.UnitPrice, request.Currency);
+            var line = purchaseOrder.AddLine(request.ProductId, request.Quantity, request.UnitPrice, request.Currency);
+            await dbContext.Set<PurchaseOrderLine>().AddAsync(line, cancellationToken);
         }
         catch (BusinessRuleViolationException ex)
         {
             return Result.Failure(ex.Message);
         }
 
-        purchaseOrderRepository.Update(purchaseOrder);
         return Result.Success();
     }
 }

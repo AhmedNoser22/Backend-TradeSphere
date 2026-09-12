@@ -17,13 +17,15 @@ public sealed class QualityInspection : AuditableEntity
         PurchaseOrderId = purchaseOrderId;
     }
 
-    public void RecordLine(Guid productId, int acceptedQuantity, int rejectedQuantity, int missingQuantity)
+    public QualityInspectionLine RecordLine(Guid productId, int acceptedQuantity, int rejectedQuantity, int missingQuantity)
     {
         if (Status == QualityInspectionStatus.Completed)
             throw new BusinessRuleViolationException("Cannot add lines to a completed inspection.");
 
         Status = QualityInspectionStatus.InProgress;
-        _lines.Add(new QualityInspectionLine(Id, productId, acceptedQuantity, rejectedQuantity, missingQuantity));
+        var line = new QualityInspectionLine(Id, productId, acceptedQuantity, rejectedQuantity, missingQuantity);
+        _lines.Add(line);
+        return line;
     }
 
     public void Complete()
@@ -34,9 +36,11 @@ public sealed class QualityInspection : AuditableEntity
         Status = QualityInspectionStatus.Completed;
         CompletedAtUtc = DateTimeOffset.UtcNow;
 
-        var accepted = _lines.Sum(l => l.AcceptedQuantity);
-        var rejected = _lines.Sum(l => l.RejectedQuantity);
-        var missing = _lines.Sum(l => l.MissingQuantity);
-        RaiseDomainEvent(new QualityInspectionCompletedEvent(Id, PurchaseOrderId, accepted, rejected, missing));
+        var acceptedLines = _lines
+            .Where(l => l.AcceptedQuantity > 0)
+            .Select(l => new QualityInspectionAcceptedLine(l.ProductId, l.AcceptedQuantity))
+            .ToList();
+
+        RaiseDomainEvent(new QualityInspectionCompletedEvent(Id, PurchaseOrderId, acceptedLines));
     }
 }

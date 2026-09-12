@@ -19,12 +19,17 @@ public sealed class PurchaseOrder : AuditableEntity
         OrderDate = orderDate;
     }
 
-    public void AddLine(Guid productId, int quantity, decimal unitPrice, string currency)
+    public PurchaseOrderLine AddLine(Guid productId, int quantity, decimal unitPrice, string currency)
     {
         if (Status != PurchaseOrderStatus.Draft)
             throw new BusinessRuleViolationException("Lines can only be added while the order is still a Draft.");
 
-        _lines.Add(new PurchaseOrderLine(Id, productId, quantity, unitPrice, currency));
+        if (_lines.Count != 0 && _lines[0].Currency != currency)
+            throw new BusinessRuleViolationException($"All lines on a purchase order must use the same currency ({_lines[0].Currency}).");
+
+        var line = new PurchaseOrderLine(Id, productId, quantity, unitPrice, currency);
+        _lines.Add(line);
+        return line;
     }
 
     public void Confirm()

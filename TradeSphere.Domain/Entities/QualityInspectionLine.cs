@@ -3,6 +3,7 @@ public sealed class QualityInspectionLine : BaseEntity
 {
     public Guid QualityInspectionId { get; private set; }
     public Guid ProductId { get; private set; }
+    public Product Product { get; private set; } = null!;
     public int AcceptedQuantity { get; private set; }
     public int RejectedQuantity { get; private set; }
     public int MissingQuantity { get; private set; }

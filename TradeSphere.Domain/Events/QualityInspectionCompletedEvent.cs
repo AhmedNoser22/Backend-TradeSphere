@@ -1,13 +1,9 @@
 ﻿namespace TradeSphere.Domain.Events;
-
-// Raised when QC finishes inspecting a shipment's goods.
-// Warehouse module listens to this to know how much stock it may receive.
-public sealed class QualityInspectionCompletedEvent(Guid inspectionId, Guid purchaseOrderId, int acceptedQuantity, int rejectedQuantity, int missingQuantity) : IDomainEvent
+public sealed record QualityInspectionAcceptedLine(Guid ProductId, int AcceptedQuantity);
+public sealed class QualityInspectionCompletedEvent(Guid inspectionId, Guid purchaseOrderId, IReadOnlyCollection<QualityInspectionAcceptedLine> acceptedLines) : IDomainEvent
 {
     public Guid InspectionId { get; } = inspectionId;
     public Guid PurchaseOrderId { get; } = purchaseOrderId;
-    public int AcceptedQuantity { get; } = acceptedQuantity;
-    public int RejectedQuantity { get; } = rejectedQuantity;
-    public int MissingQuantity { get; } = missingQuantity;
+    public IReadOnlyCollection<QualityInspectionAcceptedLine> AcceptedLines { get; } = acceptedLines;
     public DateTimeOffset OccurredOnUtc { get; } = DateTimeOffset.UtcNow;
 }
