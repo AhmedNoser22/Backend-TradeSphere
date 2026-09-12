@@ -12,9 +12,12 @@ public sealed class DeactivateUserCommandHandler(
         var user = await userRepository.GetByIdAsync(request.UserId, cancellationToken)
             ?? throw new NotFoundException(nameof(User), request.UserId);
 
+        if (user.Role == UserRole.SystemAdministrator
+            && !await userRepository.AnyAsync(new OtherActiveAdminExistsSpecification(user.Id), cancellationToken))
+            return Result.Failure("Cannot deactivate the last active System Administrator.");
+
         user.Deactivate();
         userRepository.Update(user);
-
         return Result.Success();
     }
 }

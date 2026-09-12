@@ -13,6 +13,8 @@ global using System.Threading.Tasks;
 global using TradeSphere.Api.Filters;
 global using TradeSphere.Api.Middlewares;
 global using TradeSphere.Application;
+global using TradeSphere.Application.Features.Users.CreateByAdmin;
+global using TradeSphere.Application.Features.Users.GetById;
 global using TradeSphere.Application.Common.Exceptions;
 global using TradeSphere.Application.Common.Interfaces;
 global using TradeSphere.Application.Common.Models;

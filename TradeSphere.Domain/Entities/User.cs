@@ -1,4 +1,5 @@
 ﻿namespace TradeSphere.Domain.Entities;
+
 public sealed class User : AuditableEntity
 {
     public string FullName { get; private set; } = default!;
@@ -17,9 +18,15 @@ public sealed class User : AuditableEntity
     private readonly List<RefreshToken> _refreshTokens = [];
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
 
-    private User() { } // for EF Core
+    private User() { } // For EF Core
 
-    public User(string fullName, string email, string passwordHash, UserRole role, string emailConfirmationCode, DateTimeOffset emailConfirmationCodeExpiresAtUtc)
+    public User(
+        string fullName,
+        string email,
+        string passwordHash,
+        UserRole role,
+        string? emailConfirmationCode,
+        DateTimeOffset? emailConfirmationCodeExpiresAtUtc)
     {
         FullName = fullName;
         Email = email;
@@ -28,57 +35,129 @@ public sealed class User : AuditableEntity
         EmailConfirmationCode = emailConfirmationCode;
         EmailConfirmationCodeExpiresAtUtc = emailConfirmationCodeExpiresAtUtc;
 
-        // Application's event handler listens for this and sends the SMTP email —
-        // User has no idea an email is even involved.
-        RaiseDomainEvent(new UserRegisteredEvent(Id, Email, FullName, emailConfirmationCode));
+        // Only raise the registration event when email confirmation is required.
+        if (!string.IsNullOrWhiteSpace(emailConfirmationCode))
+        {
+            RaiseDomainEvent(
+                new UserRegisteredEvent(
+                    Id,
+                    Email,
+                    FullName,
+                    emailConfirmationCode));
+        }
     }
 
     public void ConfirmEmail(string code)
     {
         if (EmailConfirmed)
-            throw new BusinessRuleViolationException("Email is already confirmed.");
-        if (EmailConfirmationCode != code || EmailConfirmationCodeExpiresAtUtc < DateTimeOffset.UtcNow)
-            throw new BusinessRuleViolationException("Invalid or expired confirmation code.");
+            throw new BusinessRuleViolationException(
+                "Email is already confirmed.");
+
+        if (EmailConfirmationCode != code ||
+            EmailConfirmationCodeExpiresAtUtc < DateTimeOffset.UtcNow)
+        {
+            throw new BusinessRuleViolationException(
+                "Invalid or expired confirmation code.");
+        }
 
         EmailConfirmed = true;
         EmailConfirmationCode = null;
         EmailConfirmationCodeExpiresAtUtc = null;
     }
 
-    public void ResendEmailConfirmationCode(string code, DateTimeOffset expiresAtUtc)
+    public void ResendEmailConfirmationCode(
+        string code,
+        DateTimeOffset expiresAtUtc)
     {
         if (EmailConfirmed)
-            throw new BusinessRuleViolationException("Email is already confirmed.");
+            throw new BusinessRuleViolationException(
+                "Email is already confirmed.");
 
         EmailConfirmationCode = code;
         EmailConfirmationCodeExpiresAtUtc = expiresAtUtc;
-        RaiseDomainEvent(new EmailConfirmationCodeResentEvent(Id, Email, code));
+
+        RaiseDomainEvent(
+            new EmailConfirmationCodeResentEvent(
+                Id,
+                Email,
+                code));
     }
 
-    public void RequestPasswordReset(string code, DateTimeOffset expiresAtUtc)
+    public void RequestPasswordReset(
+        string code,
+        DateTimeOffset expiresAtUtc)
     {
         PasswordResetCode = code;
         PasswordResetCodeExpiresAtUtc = expiresAtUtc;
-        RaiseDomainEvent(new PasswordResetRequestedEvent(Id, Email, code));
+
+        RaiseDomainEvent(
+            new PasswordResetRequestedEvent(
+                Id,
+                Email,
+                code));
     }
 
-    public void ResetPassword(string code, string newPasswordHash)
+    public void ResetPassword(
+        string code,
+        string newPasswordHash)
     {
-        if (PasswordResetCode != code || PasswordResetCodeExpiresAtUtc < DateTimeOffset.UtcNow)
-            throw new BusinessRuleViolationException("Invalid or expired password reset code.");
+        if (PasswordResetCode != code ||
+            PasswordResetCodeExpiresAtUtc < DateTimeOffset.UtcNow)
+        {
+            throw new BusinessRuleViolationException(
+                "Invalid or expired password reset code.");
+        }
 
         PasswordHash = newPasswordHash;
         PasswordResetCode = null;
         PasswordResetCodeExpiresAtUtc = null;
     }
 
-    public RefreshToken IssueRefreshToken(string token, DateTimeOffset expiresAtUtc)
+    public static User CreateByAdmin(
+        string fullName,
+        string email,
+        string passwordHash,
+        UserRole role)
     {
-        var refreshToken = new RefreshToken(Id, token, expiresAtUtc);
+        return new User(
+            fullName,
+            email,
+            passwordHash,
+            role,
+            null,
+            null)
+        {
+            EmailConfirmed = true
+        };
+    }
+
+    public RefreshToken IssueRefreshToken(
+        string token,
+        DateTimeOffset expiresAtUtc)
+    {
+        var refreshToken = new RefreshToken(
+            Id,
+            token,
+            expiresAtUtc);
+
         _refreshTokens.Add(refreshToken);
+
         return refreshToken;
     }
-    public void Activate() => IsActive = true;
-    public void Deactivate() => IsActive = false;
-    public void ChangeRole(UserRole role) => Role = role;
+
+    public void Activate()
+    {
+        IsActive = true;
+    }
+
+    public void Deactivate()
+    {
+        IsActive = false;
+    }
+
+    public void ChangeRole(UserRole role)
+    {
+        Role = role;
+    }
 }
+
