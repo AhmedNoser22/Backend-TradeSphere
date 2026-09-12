@@ -17,6 +17,7 @@ global using TradeSphere.Application.Common.Behaviors;
 global using TradeSphere.Application.Common.Exceptions;
 global using TradeSphere.Application.Common.Interfaces;
 global using TradeSphere.Application.Common.Models;
+global using TradeSphere.Application.Features.Inventory.Common;
 global using TradeSphere.Application.Common.Utilities;
 global using TradeSphere.Application.Features.Auth.Common;
 global using TradeSphere.Application.Features.Products.Common;

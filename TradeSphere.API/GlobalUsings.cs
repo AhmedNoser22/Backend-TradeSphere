@@ -74,3 +74,7 @@ global using TradeSphere.Application.Features.QualityInspections.Create;
 global using TradeSphere.Application.Features.QualityInspections.GetById;
 global using TradeSphere.Application.Features.QualityInspections.GetList;
 global using TradeSphere.Application.Features.QualityInspections.RecordLine;
+global using TradeSphere.Application.Features.Inventory.AdjustStock;
+global using TradeSphere.Application.Features.Inventory.Common;
+global using TradeSphere.Application.Features.Inventory.GetList;
+global using TradeSphere.Application.Features.Inventory.GetLowStock;

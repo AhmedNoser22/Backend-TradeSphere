@@ -1,28 +1,30 @@
-﻿//public sealed class QualityInspectionCompletedEventHandler(IApplicationDbContext dbContext)
-//    : INotificationHandler<DomainEventNotification<QualityInspectionCompletedEvent>>
-//{
-//    public async Task Handle(DomainEventNotification<QualityInspectionCompletedEvent> notification, CancellationToken cancellationToken)
-//    {
-//        var domainEvent = notification.DomainEvent;
+﻿namespace TradeSphere.Application.Features.Inventory.EventHandlers;
 
-//        foreach (var line in domainEvent.AcceptedLines)
-//        {
-//            var stock = await dbContext.InventoryStocks.FirstOrDefaultAsync(s => s.ProductId == line.ProductId, cancellationToken);
+public sealed class QualityInspectionCompletedEventHandler(IApplicationDbContext dbContext) : INotificationHandler<DomainEventNotification<QualityInspectionCompletedEvent>>
+{
+    public async Task Handle(DomainEventNotification<QualityInspectionCompletedEvent> notification, CancellationToken cancellationToken)
+    {
+        var domainEvent = notification.DomainEvent;
 
-//            if (stock is null)
-//            {
-//                stock = new InventoryStock(line.ProductId);
-//                await dbContext.InventoryStocks.AddAsync(stock, cancellationToken);
-//            }
+        foreach (var line in domainEvent.AcceptedLines)
+        {
+            var stock = await dbContext.InventoryStocks.FirstOrDefaultAsync(s => s.ProductId == line.ProductId, cancellationToken);
 
-//            stock.Receive(line.AcceptedQuantity, domainEvent.InspectionId, "Received from completed quality inspection");
-//        }
+            if (stock is null)
+            {
+                stock = new InventoryStock(line.ProductId);
+                await dbContext.InventoryStocks.AddAsync(stock, cancellationToken);
+            }
 
-//        var purchaseOrder = await dbContext.PurchaseOrders.FirstOrDefaultAsync(po => po.Id == domainEvent.PurchaseOrderId, cancellationToken);
+            var movement = stock.Receive(line.AcceptedQuantity, domainEvent.InspectionId, "Received from completed quality inspection");
+            await dbContext.Set<InventoryMovement>().AddAsync(movement, cancellationToken);
+        }
 
-//        if (purchaseOrder is { Status: PurchaseOrderStatus.FullyShipped })
-//            purchaseOrder.Close();
+        var purchaseOrder = await dbContext.PurchaseOrders.FirstOrDefaultAsync(po => po.Id == domainEvent.PurchaseOrderId, cancellationToken);
 
-//        await dbContext.SaveChangesAsync(cancellationToken);
-//    }
-//}
+        if (purchaseOrder is { Status: PurchaseOrderStatus.FullyShipped })
+            purchaseOrder.Close();
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+}

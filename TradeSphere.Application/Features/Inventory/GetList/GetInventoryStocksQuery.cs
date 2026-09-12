@@ -1,0 +1,2 @@
+﻿namespace TradeSphere.Application.Features.Inventory.GetList;
+public sealed record GetInventoryStocksQuery(string? SearchTerm, int PageNumber = 1, int PageSize = 20) : IRequest<PaginatedList<InventoryStockListItemDto>>;
