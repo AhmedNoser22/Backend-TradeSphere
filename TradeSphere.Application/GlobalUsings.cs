@@ -34,6 +34,7 @@ global using TradeSphere.Domain.Events;
 global using TradeSphere.Domain.Exceptions;
 global using TradeSphere.Domain.Specifications;
 global using TradeSphere.Domain.ValueObjects;
-
+global using TradeSphere.Application.Features.Customers.Common;
+global using TradeSphere.Application.Features.SalesOrders.Common;
 
 

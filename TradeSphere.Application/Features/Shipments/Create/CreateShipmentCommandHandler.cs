@@ -10,7 +10,7 @@ public sealed class CreateShipmentCommandHandler(
             ?? throw new NotFoundException(nameof(PurchaseOrder), request.PurchaseOrderId);
         try
         {
-            purchaseOrder.MarkPartiallyShipped();
+            purchaseOrder.MarkFullyShipped();
         }
         catch (DomainException ex)
         {

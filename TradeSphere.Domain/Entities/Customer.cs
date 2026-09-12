@@ -24,5 +24,6 @@ public sealed class Customer : AuditableEntity
         BillingAddress = billingAddress;
     }
 
+    public void Activate() => IsActive = true;
     public void Deactivate() => IsActive = false;
 }
