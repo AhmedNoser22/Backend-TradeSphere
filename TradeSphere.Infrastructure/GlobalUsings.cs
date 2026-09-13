@@ -20,3 +20,5 @@ global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
 global using Microsoft.IdentityModel.Tokens;
+global using TradeSphere.Domain.Enums;
+global using Microsoft.EntityFrameworkCore;

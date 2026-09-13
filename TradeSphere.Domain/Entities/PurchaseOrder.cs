@@ -6,7 +6,8 @@ public sealed class PurchaseOrder : AuditableEntity
     public Supplier Supplier { get; private set; } = default!;
     public PurchaseOrderStatus Status { get; private set; } = PurchaseOrderStatus.Draft;
     public DateTimeOffset OrderDate { get; private set; }
-
+    public decimal TotalAmount => _lines.Sum(l => l.Quantity * l.UnitPrice);
+    public string? Currency => _lines.Count != 0 ? _lines[0].Currency : null;
     private readonly List<PurchaseOrderLine> _lines = [];
     public IReadOnlyCollection<PurchaseOrderLine> Lines => _lines.AsReadOnly();
 
@@ -40,6 +41,10 @@ public sealed class PurchaseOrder : AuditableEntity
             throw new BusinessRuleViolationException("Cannot confirm a purchase order with no lines.");
 
         Status = PurchaseOrderStatus.Confirmed;
+
+        // The moment the company commits to owing the supplier a specific
+        // amount — Finance's event handler opens an outgoing Payment for it.
+        RaiseDomainEvent(new PurchaseOrderConfirmedEvent(Id, TotalAmount, Currency!));
     }
 
     public void MarkPartiallyShipped()

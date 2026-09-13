@@ -12,22 +12,22 @@ public sealed class SuppliersController(ISender sender) : ApiControllerBase(send
         Ok(await Mediator.Send(new GetSupplierByIdQuery(id), cancellationToken));
 
     // Write endpoints: only the roles that actually own supplier data.
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.SystemAdministrator)]
+    [RequireRole(UserRole.ProcurementOfficer)]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(CreateSupplierCommand command, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(command, cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.SystemAdministrator)]
+    [RequireRole(UserRole.ProcurementOfficer)]
     [HttpPut("{id:guid}")]
     public async Task<ActionResult> Update(Guid id, UpdateSupplierRequest request, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(new UpdateSupplierCommand(id, request.Name, request.Country, request.Email, request.Phone), cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.SystemAdministrator)]
+    [RequireRole(UserRole.ProcurementOfficer)]
     [HttpPost("{id:guid}/deactivate")]
     public async Task<ActionResult> Deactivate(Guid id, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(new DeactivateSupplierCommand(id), cancellationToken));
 
-    [RequireRole(UserRole.ProcurementOfficer, UserRole.SystemAdministrator)]
+    [RequireRole(UserRole.ProcurementOfficer)]
     [HttpPost("{id:guid}/activate")]
     public async Task<ActionResult> Activate(Guid id, CancellationToken cancellationToken) =>
         HandleResult(await Mediator.Send(new ActivateSupplierCommand(id), cancellationToken));

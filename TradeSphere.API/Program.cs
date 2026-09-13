@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using TradeSphere.Infrastructure.Identity;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, configuration) => configuration
@@ -64,6 +59,22 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobManager =
+        scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+
+    recurringJobManager.AddOrUpdate<ScheduledJobs>(
+        "check-delayed-customs-clearances",
+        job => job.CheckDelayedCustomsClearancesAsync(),
+        Cron.Daily);
+
+    recurringJobManager.AddOrUpdate<ScheduledJobs>(
+        "check-low-stock",
+        job => job.CheckLowStockAsync(),
+        Cron.Daily);
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
